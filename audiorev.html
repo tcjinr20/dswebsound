@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%-include("./header")-%>
+</head>
+<body>
+
+    <% for(var i=0;i<list.length;i++){%>
+    <input type="button" value="<%=list[i]%>" onclick="begin(this)">
+    <%}%>
+<script>
+    var socket = null;
+    function begin(e){
+        socket=io.connect("/");
+        socket.on('connect',function(){
+            socket.emit('lookzhubo',e.value);
+        })
+
+        socket.on('joinsucess',function () {
+            alert("成功加入")
+            socket.on('getaudio',function (data){
+                console.log('收到数据');
+                var sound =soundhttp.buildSound(data);
+                soundhttp.playSound(sound);
+            })
+        })
+        socket.on('joinerror',function () {
+            alert('找不到')
+        })
+        socket.on('audioend',function () {
+            console.log('audio end ')
+            soundhttp.playend();
+        })
+    }
+
+</script>
+</body>
+
+</html>

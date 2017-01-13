@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%-include("./header")-%>
+</head>
+<body>
+<button onclick="begin()">开始</button>
+<audio controls="true" muted="true"></audio>
+<script>
+    var mediaConstraints = {
+        audio: true
+    };
+    function begin() {
+        console.log('www')
+        socket = io.connect('/');
+        socket.on('connect',function(e){
+            socket.emit('bezhubo',socket.id);
+        });
+
+        //alert(123)
+        soundhttp.getData('/viper.ogg');
+        soundhttp.sendback = function (e) {
+            console.log('发送数据')
+            socket.emit('postaudio',{byte:e,len:e.length});
+        }
+        soundhttp.oversend=function (key) {
+            console.log('end of audio')
+            socket.emit('audioover',key);
+        }
+        //navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(function(e){console.log(e)});
+    }
+    function successCallback(stream){
+
+    }
+</script>
+</body>
+
+</html>
